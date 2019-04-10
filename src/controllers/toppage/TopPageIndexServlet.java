@@ -28,7 +28,13 @@ public class TopPageIndexServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/topPage/index.jsp");
+        if(request.getSession().getAttribute("flush") != null){ //もしセッションスコープの"flush"がnullでなけければ
+            request.setAttribute("flush", request.getSession().getAttribute("flush")); //リクエストスコープに"flush"という名前でセッションスコープの"flush"を保存する
+            request.getSession().removeAttribute("flush"); //セッションスコープの"flush"を削除する
+        }
+
+
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/topPage/index.jsp"); //index.jspを表示する
         rd.forward(request, response);
     }
 
