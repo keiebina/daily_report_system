@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.util.List" %>
 <c:import url="../layout/app.jsp">
 <c:param name="content">
         <c:if test="${flush != null}">
@@ -14,10 +15,11 @@
                     <th>社員番号</th>
                     <th>氏名</th>
                     <th>操作</th>
+                    <th>フォロー</th>
                 </tr>
                 <c:forEach var="employee" items="${employees }" varStatus="status">
                     <tr class="row${status.count % 2 }">
-                        <td><c:out value="${employee.code }"></c:out></td>
+                        <td><c:out value="${employee.code }"></c:out><c:set var="code" value="${employee.code}" /></td>
                         <td><c:out value="${employee.name }"></c:out></td>
                         <td>
                             <c:choose>
@@ -29,6 +31,25 @@
                                 </c:otherwise>
                             </c:choose>
                         </td>
+                        <td>
+                             <%List<String> follows = (List<String>)request.getAttribute("follow_ids"); %>
+                             <%String code = (String)pageContext.findAttribute("code"); %>
+                             <%String searchKey = code; %>
+                             <%System.out.println(searchKey); %>
+                             <%String findResult = null; %>
+                             <%for(int i=0; i < follows.size(); i++) { %>
+                               <%if(searchKey.equals(follows.get(i))){ %>
+                                  <%findResult = follows.get(i); %>
+                               <%} %>
+                             <%} %>
+
+                             <%if(findResult == null){ %>
+                               <a href="<c:url value='/follows/update?follow_id=${employee.code }' />">Following</a>
+                             <%}else{%>
+                                  <a href="<c:url value='/follows/update?follow_id=${employee.code }' />">Follow</a>
+                             <%}%>
+                        </td>
+
                     </tr>
                 </c:forEach>
             </tbody>

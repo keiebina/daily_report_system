@@ -48,11 +48,17 @@ public class EmployeesIndexServlet extends HttpServlet {
         long employees_count = (long)em.createNamedQuery("getEmployeesCount", Long.class)
                                     .getSingleResult();
 
+        //フォローしているユーザーのIDを取得
+        List<String> follow_ids = em.createNamedQuery("getAllfollow_ids", String.class)
+                                    .getResultList();
+
         em.close();
 
         request.setAttribute("employees", employees);
         request.setAttribute("employees_count", employees_count);
         request.setAttribute("page", page);
+        request.setAttribute("follow_ids", follow_ids);              //追加
+
         if(request.getSession().getAttribute("flush") != null){
             request.setAttribute("flush", request.getSession().getAttribute("flush"));
             request.getSession().removeAttribute("flush");
