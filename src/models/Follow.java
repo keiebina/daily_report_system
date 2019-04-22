@@ -19,7 +19,16 @@ import javax.persistence.Table;
     @NamedQuery(
             name = "getAllfollow_ids",
             query = "SELECT f.follow_id FROM Follow AS f"         //フォローされる側の社員IDをすべて取得
-            )
+            ),
+    @NamedQuery(
+            name = "getFollow_ids",
+            query = "SELECT f.follow_id FROM Follow AS f WHERE f.user_id = :user_id"         //フォローされる側の社員IDをすべて取得
+            ),
+    @NamedQuery(
+            name = "deleteFollow_id",
+            query = "DELETE  FROM Follow AS f WHERE f.user_id = :user_id AND f.follow_id = :follow_id"     //フォローの解除
+            ),
+
 })
 @Entity
 public class Follow {

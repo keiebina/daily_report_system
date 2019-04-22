@@ -54,6 +54,8 @@ public class EmployeesIndexServlet extends HttpServlet {
 
         em.close();
 
+
+
         request.setAttribute("employees", employees);
         request.setAttribute("employees_count", employees_count);
         request.setAttribute("page", page);

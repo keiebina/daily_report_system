@@ -44,9 +44,9 @@
                              <%} %>
 
                              <%if(findResult == null){ %>
-                               <a href="<c:url value='/follows/update?follow_id=${employee.code }' />">Following</a>
+                               <a href="<c:url value='/follows/update?follow_id=${employee.code }' />">Follow</a>
                              <%}else{%>
-                                  <a href="<c:url value='/follows/update?follow_id=${employee.code }' />">Follow</a>
+                                  <a href="<c:url value='/follows/update?follow_id=${employee.code }' />">Following</a>
                              <%}%>
                         </td>
 

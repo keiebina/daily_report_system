@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import models.Employee;
+import models.EmployeeView;
 import models.Follow;
 import utils.DBUtil;
 
@@ -43,24 +44,52 @@ public class FollowsUpdateServlet extends HttpServlet {
             String user_id = (String)e.getCode();
             String follow_id = (String)request.getParameter("follow_id");
 
-            //followテーブルにuser_id,follow_idを保存
-            Follow f = new Follow();
-            f.setUser_id(user_id);
-            f.setFollow_id(follow_id);
+            //user_idのフォローidをデータベースから取得
+            List<String> ids = em.createNamedQuery("getFollow_ids", String.class)
+                                .setParameter("user_id", user_id)
+                                .getResultList();
 
-            em.getTransaction().begin();
-            em.persist(f);
-            em.getTransaction().commit();
+            EmployeeView ev = new EmployeeView();
+            ev.getEmployee();
 
-            //follow_idをデータベースからすべて取得してリクエストスコープに保存
-            List<String> follow_ids = em.createNamedQuery("getAllfollow_ids", String.class)
-                                        .getResultList();
-            request.setAttribute("follow_ids", follow_ids);
 
-            em.close();
-            request.getSession().setAttribute("flush", "フォローが完了しました。");
-            response.sendRedirect(request.getContextPath() + "/employees/index");
 
+            //フォローしているユーザーかどうか
+            if(FollowDecision.isFollowing(follow_id, ids)){
+
+                //フォローしているユーザーだった場合
+                em.getTransaction().begin();
+
+                em.createNamedQuery("deleteFollow_id")
+                    .setParameter("user_id", user_id)
+                    .setParameter("follow_id", follow_id)
+                    .executeUpdate();
+
+                em.close();
+                request.getSession().setAttribute("flush", "フォローを解除しました。");
+                response.sendRedirect(request.getContextPath() + "/employees/index");
+
+
+            }else{      //フォローしていないユーザーの場合
+
+                //followテーブルにuser_id,follow_idを保存
+                Follow f = new Follow();
+                f.setUser_id(user_id);
+                f.setFollow_id(follow_id);
+
+                em.getTransaction().begin();
+                em.persist(f);
+                em.getTransaction().commit();
+
+                //follow_idをデータベースからすべて取得してリクエストスコープに保存
+                List<String> follow_ids = em.createNamedQuery("getAllfollow_ids", String.class)
+                                            .getResultList();
+                request.setAttribute("follow_ids", follow_ids);
+
+                em.close();
+                request.getSession().setAttribute("flush", "フォローが完了しました。");
+                response.sendRedirect(request.getContextPath() + "/employees/index");
+            }
 
     }
 

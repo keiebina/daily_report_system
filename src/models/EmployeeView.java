@@ -1,39 +1,20 @@
 package models;
 
 public class EmployeeView {
-    private Integer id;
-    private String code;
-    private String name;
-    private boolean isFollow;
-    public Integer getId() {
-        return id;
+    private Employee employee;
+    private Boolean isFollow;
+    public Employee getEmployee() {
+        return employee;
     }
-    public void setId(Integer id) {
-        this.id = id;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
-    public String getCode() {
-        return code;
-    }
-    public void setCode(String code) {
-        this.code = code;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public boolean isFollow() {
+    public Boolean getIsFollow() {
         return isFollow;
     }
-    public void setFollow(boolean isFollow) {
+    public void setIsFollow(Boolean isFollow) {
         this.isFollow = isFollow;
     }
-
-
-
-
-
 
 
 }
