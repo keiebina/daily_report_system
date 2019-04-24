@@ -37,15 +37,16 @@ public class EmployeesIndexServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EntityManager em = DBUtil.createEntityManager();
 
-
         int page = 1;
         try{
             page = Integer.parseInt(request.getParameter("page"));
         }catch(NumberFormatException e){
         }
         //既存のEmployeeViewデータを削除
-
-
+        em.getTransaction().begin();
+        em.createNamedQuery("deleteAllEmployeeViews")
+            .executeUpdate();
+        em.getTransaction().commit();
 
         //セッションスコープからuser_id情報の取得
         HttpSession session = ((HttpServletRequest)request).getSession();
@@ -69,7 +70,9 @@ public class EmployeesIndexServlet extends HttpServlet {
                 .getResultList();
         int resultSize = codes.size();
 
+
         for(int i = 0; i < resultSize; i++){
+            em.getTransaction().begin();
             //Employee情報の取得・保存
             EmployeeView ev = new EmployeeView();
             Integer id = ids.get(i);
@@ -90,10 +93,11 @@ public class EmployeesIndexServlet extends HttpServlet {
                     }
                 }
             }
-            em.getTransaction().begin();
             em.persist(ev);
             em.getTransaction().commit();
+
         }
+
 
         List<EmployeeView> employeeViews = em.createNamedQuery("getAllEmployeeViews", EmployeeView.class)
                 .setFirstResult(15 * (page - 1))
@@ -103,13 +107,12 @@ public class EmployeesIndexServlet extends HttpServlet {
         long employees_count = (long)em.createNamedQuery("getEmployeesCount", Long.class)
                 .getSingleResult();
 
-
         em.close();
+
 
         request.setAttribute("employeesViews", employeeViews);
         request.setAttribute("employees_count", employees_count);
         request.setAttribute("page", page);
-        request.setAttribute("follow_ids", follow_ids);              //追加
 
         if(request.getSession().getAttribute("flush") != null){
             request.setAttribute("flush", request.getSession().getAttribute("flush"));

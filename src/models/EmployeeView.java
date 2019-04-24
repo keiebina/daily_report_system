@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -14,9 +16,19 @@ import javax.persistence.Table;
     @NamedQuery(
             name = "getAllEmployeeViews",
             query = "SELECT ev FROM EmployeeView AS ev ORDER BY ev.employee_id DESC"
+            ),
+    @NamedQuery(
+            name = "deleteAllEmployeeViews",
+            query = "DELETE FROM EmployeeView AS ev"
+            ),
+})
+@NamedNativeQueries({
+    @NamedNativeQuery(
+            name = "Reset_idEmployeeViews",
+            query = "TRUNCATE TABLE EmployeeView ", //実行できたが怪しい
+            resultClass = EmployeeView.class
             )
 })
-
 @Entity
 public class EmployeeView {
     @Id

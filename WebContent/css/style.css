@@ -166,3 +166,8 @@ pre{
 h3{
     font-size: larger;
 }
+
+.menu-list{
+    float: left;
+
+}

@@ -34,7 +34,8 @@ public class FollowsUpdateServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        
+        
             EntityManager em = DBUtil.createEntityManager();
 
             //セッションスコープからuser_id情報の取得 //リクエストパラメータからfollow_idの取得
@@ -74,13 +75,8 @@ public class FollowsUpdateServlet extends HttpServlet {
                 em.getTransaction().begin();
                 em.persist(f);
                 em.getTransaction().commit();
-
-                //follow_idをデータベースからすべて取得してリクエストスコープに保存
-                List<String> follow_ids = em.createNamedQuery("getAllfollow_ids", String.class)
-                                            .getResultList();
-                request.setAttribute("follow_ids", follow_ids);
-
                 em.close();
+
                 request.getSession().setAttribute("flush", "フォローが完了しました。");
                 response.sendRedirect(request.getContextPath() + "/employees/index");
             }
