@@ -19,8 +19,24 @@ import javax.persistence.Table;
             ),              //全ての従業員情報を降順で取得
     @NamedQuery(
             name = "getEmployeesCount",
-            query = "SELECT COUNT(e) FROM Employee AS e"
+            query = "SELECT COUNT(e) FROM Employee AS e "
             ),              //従業員情報の全件数を取得
+    @NamedQuery(
+            name = "getAllEmployee_ids",
+            query = "SELECT e.id FROM Employee AS e ORDER BY e.id ASC"
+            ),              //idのみ全て取得
+    @NamedQuery(
+            name = "getAllEmployee_codes",
+            query = "SELECT e.code FROM Employee AS e ORDER BY e.id ASC"
+            ),              //codeのみ全て取得
+    @NamedQuery(
+            name = "getAllEmployee_names",
+            query = "SELECT e.name FROM Employee AS e ORDER BY e.id ASC"
+            ),              //nameのみ全て取得
+    @NamedQuery(
+            name = "getAllEmployee_delete_flags",
+            query = "SELECT e.delete_flag FROM Employee AS e ORDER BY e.id ASC"
+            ),              //delete_flagのみ全て取得
     @NamedQuery(
             name = "checkRegisteredCode",
             query = "SELECT COUNT(e) FROM Employee AS e WHERE e.code = :code"

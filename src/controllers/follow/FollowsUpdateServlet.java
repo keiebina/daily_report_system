@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import models.Employee;
-import models.EmployeeView;
 import models.Follow;
 import utils.DBUtil;
 
@@ -48,11 +47,6 @@ public class FollowsUpdateServlet extends HttpServlet {
             List<String> ids = em.createNamedQuery("getFollow_ids", String.class)
                                 .setParameter("user_id", user_id)
                                 .getResultList();
-
-            EmployeeView ev = new EmployeeView();
-            ev.getEmployee();
-
-
 
             //フォローしているユーザーかどうか
             if(FollowDecision.isFollowing(follow_id, ids)){

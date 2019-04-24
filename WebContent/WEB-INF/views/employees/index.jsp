@@ -17,37 +17,29 @@
                     <th>操作</th>
                     <th>フォロー</th>
                 </tr>
-                <c:forEach var="employee" items="${employees }" varStatus="status">
+                <c:forEach var="employeeView" items="${employeesViews }" varStatus="status">
                     <tr class="row${status.count % 2 }">
-                        <td><c:out value="${employee.code }"></c:out><c:set var="code" value="${employee.code}" /></td>
-                        <td><c:out value="${employee.name }"></c:out></td>
+                        <td><c:out value="${employeeView.employee_code }"></c:out></td>
+                        <td><c:out value="${employeeView.employee_name }"></c:out></td>
                         <td>
                             <c:choose>
-                                <c:when test="${employee.delete_flag == 1 }">
+                                <c:when test="${employeeView.employee_delete_flag == 1 }">
                                     (削除済み)
                                 </c:when>
                                 <c:otherwise>
-                                    <a href="<c:url value='/employees/show?id=${employee.id }' />">詳細を表示</a>
+                                    <a href="<c:url value='/employees/show?id=${employeeView.employee_id }' />">詳細を表示</a>
                                 </c:otherwise>
                             </c:choose>
                         </td>
                         <td>
-                             <%List<String> follows = (List<String>)request.getAttribute("follow_ids"); %>
-                             <%String code = (String)pageContext.findAttribute("code"); %>
-                             <%String searchKey = code; %>
-                             <%System.out.println(searchKey); %>
-                             <%String findResult = null; %>
-                             <%for(int i=0; i < follows.size(); i++) { %>
-                               <%if(searchKey.equals(follows.get(i))){ %>
-                                  <%findResult = follows.get(i); %>
-                               <%} %>
-                             <%} %>
-
-                             <%if(findResult == null){ %>
-                               <a href="<c:url value='/follows/update?follow_id=${employee.code }' />">Follow</a>
-                             <%}else{%>
-                                  <a href="<c:url value='/follows/update?follow_id=${employee.code }' />">Following</a>
-                             <%}%>
+                            <c:choose>
+                                <c:when test="${employeeView.follow_flag == 1 }">
+                                    <a href="<c:url value='/follows/update?follow_id=${employeeView.employee_code }' />">Following</a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="<c:url value='/follows/update?follow_id=${employeeView.employee_code }' />">Follow</a>
+                                </c:otherwise>
+                            </c:choose>
                         </td>
 
                     </tr>
