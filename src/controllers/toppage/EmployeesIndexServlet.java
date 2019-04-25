@@ -51,10 +51,10 @@ public class EmployeesIndexServlet extends HttpServlet {
         //セッションスコープからuser_id情報の取得
         HttpSession session = ((HttpServletRequest)request).getSession();
         Employee e = (Employee)session.getAttribute("login_employee");
-        String user_id = (String)e.getCode();
+        Integer user_id = e.getId();
 
         //user_idがフォローしている社員のidを取得
-        List<String> follow_ids = em.createNamedQuery("getFollow_ids", String.class)
+        List<Integer> follow_ids = em.createNamedQuery("getFollow_ids", Integer.class)
                                     .setParameter("user_id", user_id)
                                     .getResultList();
 
@@ -68,8 +68,8 @@ public class EmployeesIndexServlet extends HttpServlet {
                 .getResultList();
         List<Integer> delete_flags = em.createNamedQuery("getAllEmployee_delete_flags", Integer.class)
                 .getResultList();
-        int resultSize = codes.size();
-
+        long resultSize = (long)em.createNamedQuery("getEmployeesCount", Long.class)
+                                .getSingleResult();
 
         for(int i = 0; i < resultSize; i++){
             em.getTransaction().begin();
@@ -88,7 +88,7 @@ public class EmployeesIndexServlet extends HttpServlet {
             //フォローしている社員の判定
             if(follow_ids.size() > 0){
                 for(int j = 0; j < follow_ids.size(); j++){
-                    if(code.equals(follow_ids.get(j))){
+                    if(id.equals(follow_ids.get(j))){
                         ev.setFollow_flag(1);
                     }
                 }

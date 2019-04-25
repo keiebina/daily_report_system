@@ -34,10 +34,10 @@
                         <td>
                             <c:choose>
                                 <c:when test="${employeeView.follow_flag == 1 }">
-                                    <a href="<c:url value='/follows/update?follow_id=${employeeView.employee_code }' />">Following</a>
+                                    <a href="<c:url value='/follows/update?follow_id=${employeeView.employee_id }' />">Following</a>
                                 </c:when>
                                 <c:otherwise>
-                                    <a href="<c:url value='/follows/update?follow_id=${employeeView.employee_code }' />">Follow</a>
+                                    <a href="<c:url value='/follows/update?follow_id=${employeeView.employee_id }' />">Follow</a>
                                 </c:otherwise>
                             </c:choose>
                         </td>

@@ -34,23 +34,23 @@ public class FollowsUpdateServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
-        
+
+
             EntityManager em = DBUtil.createEntityManager();
 
             //セッションスコープからuser_id情報の取得 //リクエストパラメータからfollow_idの取得
             HttpSession session = ((HttpServletRequest)request).getSession();
             Employee e = (Employee)session.getAttribute("login_employee");
-            String user_id = (String)e.getCode();
-            String follow_id = (String)request.getParameter("follow_id");
+            Integer user_id = e.getId();
+            Integer follow_id = Integer.parseInt(request.getParameter("follow_id"));
 
             //user_idのフォローidをデータベースから取得
-            List<String> ids = em.createNamedQuery("getFollow_ids", String.class)
+            List<Integer> follow_ids = em.createNamedQuery("getFollow_ids", Integer.class)
                                 .setParameter("user_id", user_id)
                                 .getResultList();
 
             //フォローしているユーザーかどうか
-            if(FollowDecision.isFollowing(follow_id, ids)){
+            if(FollowDecision.isFollowing(follow_id, follow_ids)){
 
                 //フォローしているユーザーだった場合
                 em.getTransaction().begin();

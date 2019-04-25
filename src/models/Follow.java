@@ -25,6 +25,10 @@ import javax.persistence.Table;
             query = "SELECT f.follow_id FROM Follow AS f WHERE f.user_id = :user_id"         //フォローされる側の社員IDをすべて取得
             ),
     @NamedQuery(
+            name = "countFollow_ids",
+            query = "SELECT COUNT(f) FROM Follow AS f WHERE f.user_id = :user_id"         //フォローされる側の社員ID数を取得
+            ),
+    @NamedQuery(
             name = "deleteFollow_id",
             query = "DELETE  FROM Follow AS f WHERE f.user_id = :user_id AND f.follow_id = :follow_id"     //フォローの解除
             ),
@@ -39,11 +43,11 @@ public class Follow {
 
 
     @JoinColumn(name = "user_id", nullable = false)            //フォローする側の社員ID
-    private String user_id;
+    private Integer user_id;
 
 
     @Column(name = "follow_id", nullable = false)               //フォローされる側の社員ID
-    private String follow_id;
+    private Integer follow_id;
 
     public Integer getId() {
         return id;
@@ -55,22 +59,22 @@ public class Follow {
     }
 
 
-    public String getUser_id() {
+    public Integer getUser_id() {
         return user_id;
     }
 
 
-    public void setUser_id(String user_id) {
+    public void setUser_id(Integer user_id) {
         this.user_id = user_id;
     }
 
 
-    public String getFollow_id() {
+    public Integer getFollow_id() {
         return follow_id;
     }
 
 
-    public void setFollow_id(String follow_id) {
+    public void setFollow_id(Integer follow_id) {
         this.follow_id = follow_id;
     }
 

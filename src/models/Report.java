@@ -33,6 +33,10 @@ import javax.persistence.Table;
             name = "getMyReportsCount",
             query = "SELECT COUNT(r) FROM Report AS r WHERE r.employee =:employee"
             ),
+    @NamedQuery(
+            name = "getAllFollowingReports",
+            query = "SELECT r FROM Report AS r WHERE r.employee IN (:follow_ids) " //これがエラーに
+            ),
 })
 @Entity
 public class Report {

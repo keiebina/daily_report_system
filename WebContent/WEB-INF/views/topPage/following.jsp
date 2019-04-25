@@ -12,7 +12,7 @@
         <h2>日報管理システムへようこそ</h2>
             <ul>
                 <li class="menu-list"><a href="#">【自分の日報 一覧】</a></li>
-                <li class="menu-list"><a href="<c:url value='/following' />">【フォロー社員の日報 一覧】</a></li>
+                <li class="menu-list"><a href="#">【フォロー社員の日報 一覧】</a></li>
             </ul>
         <table id="report_list">
             <tbody>
