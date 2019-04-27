@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -17,20 +18,20 @@ import javax.persistence.Table;
             query = "SELECT f FROM Follow AS f"
             ),
     @NamedQuery(
-            name = "getAllfollow_ids",
-            query = "SELECT f.follow_id FROM Follow AS f"         //フォローされる側の社員IDをすべて取得
+            name = "getAllfollows",
+            query = "SELECT f.followEmployee FROM Follow AS f"         //フォローされている社員情報をすべて取得
             ),
     @NamedQuery(
-            name = "getFollow_ids",
-            query = "SELECT f.follow_id FROM Follow AS f WHERE f.user_id = :user_id"         //フォローされる側の社員IDをすべて取得
+            name = "getFollows",
+            query = "SELECT f.followEmployee FROM Follow AS f WHERE f.user = :user"  //ログインしている従業員にフォローされている社員情報をすべて取得
             ),
     @NamedQuery(
-            name = "countFollow_ids",
-            query = "SELECT COUNT(f) FROM Follow AS f WHERE f.user_id = :user_id"         //フォローされる側の社員ID数を取得
+            name = "countFollows",
+            query = "SELECT COUNT(f) FROM Follow AS f WHERE f.user = :user"         //ログインしている従業員にフォローされている社員数を取得
             ),
     @NamedQuery(
-            name = "deleteFollow_id",
-            query = "DELETE  FROM Follow AS f WHERE f.user_id = :user_id AND f.follow_id = :follow_id"     //フォローの解除
+            name = "deleteFollow",
+            query = "DELETE  FROM Follow AS f WHERE f.user = :user AND f.followEmployee = :followEmployee"     //フォローの解除
             ),
 
 })
@@ -41,41 +42,41 @@ public class Follow {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @ManyToOne
+    @JoinColumn(name = "user", nullable = false)            //フォローする側の社員情報
+    private Employee user;
 
-    @JoinColumn(name = "user_id", nullable = false)            //フォローする側の社員ID
-    private Integer user_id;
+    @ManyToOne
+    @JoinColumn(name = "followEmployee", nullable = false)               //フォローされる側の社員情報
+    private Employee followEmployee;
 
-
-    @Column(name = "follow_id", nullable = false)               //フォローされる側の社員ID
-    private Integer follow_id;
-
+    //セッターとゲッター
     public Integer getId() {
         return id;
     }
-
 
     public void setId(Integer id) {
         this.id = id;
     }
 
+    public Employee getUser() {
+        return user;
+    }
 
-    public Integer getUser_id() {
-        return user_id;
+    public void setUser(Employee user) {
+        this.user = user;
+    }
+
+    public Employee getFollowEmployee() {
+        return followEmployee;
+    }
+
+    public void setFollowEmployee(Employee followEmployee) {
+        this.followEmployee = followEmployee;
     }
 
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
-    }
 
 
-    public Integer getFollow_id() {
-        return follow_id;
-    }
-
-
-    public void setFollow_id(Integer follow_id) {
-        this.follow_id = follow_id;
-    }
 
 }

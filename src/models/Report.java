@@ -35,7 +35,11 @@ import javax.persistence.Table;
             ),
     @NamedQuery(
             name = "getAllFollowingReports",
-            query = "SELECT r FROM Report AS r WHERE r.employee IN (:follow_ids) " //これがエラーに
+            query = "SELECT r FROM Report AS r WHERE r.employee IN (:follows) ORDER BY r.id DESC" //フォローしているユーザーのレポートのみ取得
+            ),
+    @NamedQuery(
+            name = "getAllFollowingCount",
+            query = "SELECT Count(r) FROM Report AS r WHERE r.employee IN (:follows) ORDER BY r.id DESC" //フォローしているユーザーのレポートのみ取得
             ),
 })
 @Entity

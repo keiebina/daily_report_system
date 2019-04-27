@@ -3,13 +3,15 @@ package controllers.follow;
 
 import java.util.List;
 
+import models.Employee;
+
 public class FollowDecision {
 
-    public static Boolean isFollowing(Integer follow_id, List<Integer> follow_ids){
+    public static Boolean isFollowing(Integer followId, List<Employee> follows){
 
-        if(follow_ids.size() > 0 ){
-            for(int i = 0; i < follow_ids.size(); i++){
-                if(follow_id.equals(follow_ids.get(i))){
+        if(follows.size() > 0 ){
+            for(int i = 0; i < follows.size(); i++){
+                if(followId.equals(follows.get(i).getId())){
                     return  true;
                 }
             }

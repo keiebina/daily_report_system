@@ -10,7 +10,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import models.Employee;
 import models.EmployeeView;
@@ -38,24 +37,25 @@ public class EmployeesIndexServlet extends HttpServlet {
         EntityManager em = DBUtil.createEntityManager();
 
         int page = 1;
+
         try{
             page = Integer.parseInt(request.getParameter("page"));
         }catch(NumberFormatException e){
         }
+
         //既存のEmployeeViewデータを削除
         em.getTransaction().begin();
         em.createNamedQuery("deleteAllEmployeeViews")
             .executeUpdate();
         em.getTransaction().commit();
 
-        //セッションスコープからuser_id情報の取得
-        HttpSession session = ((HttpServletRequest)request).getSession();
-        Employee e = (Employee)session.getAttribute("login_employee");
-        Integer user_id = e.getId();
+        //セッションスコープからuser情報を取得
+        Employee user = (Employee)request.getSession().getAttribute("login_employee");
 
-        //user_idがフォローしている社員のidを取得
-        List<Integer> follow_ids = em.createNamedQuery("getFollow_ids", Integer.class)
-                                    .setParameter("user_id", user_id)
+
+        //user_idがフォローしている社員情報を取得
+        List<Employee> follows = em.createNamedQuery("getFollows", Employee.class)
+                                    .setParameter("user", user)
                                     .getResultList();
 
 
@@ -86,9 +86,9 @@ public class EmployeesIndexServlet extends HttpServlet {
             ev.setEmployee_delete_flag(delete_flag);
             ev.setFollow_flag(0);
             //フォローしている社員の判定
-            if(follow_ids.size() > 0){
-                for(int j = 0; j < follow_ids.size(); j++){
-                    if(id.equals(follow_ids.get(j))){
+            if(follows.size() > 0){
+                for(int j = 0; j < follows.size(); j++){
+                    if(id.equals(follows.get(j).getId())){
                         ev.setFollow_flag(1);
                     }
                 }

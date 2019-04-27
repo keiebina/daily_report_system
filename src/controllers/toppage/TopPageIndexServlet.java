@@ -60,9 +60,9 @@ public class TopPageIndexServlet extends HttpServlet {
         request.setAttribute("reports_count", reports_count);
         request.setAttribute("page", page);
 
-        if(request.getSession().getAttribute("flush") != null){ //もしセッションスコープの"flush"がnullでなけければ
+        if(request.getSession().getAttribute("flush") != null){                       //もしセッションスコープの"flush"がnullでなけければ
             request.setAttribute("flush", request.getSession().getAttribute("flush")); //リクエストスコープに"flush"という名前でセッションスコープの"flush"を保存する
-            request.getSession().removeAttribute("flush"); //セッションスコープの"flush"を削除する
+            request.getSession().removeAttribute("flush");                             //セッションスコープの"flush"を削除する
         }
 
 

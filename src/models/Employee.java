@@ -22,6 +22,10 @@ import javax.persistence.Table;
             query = "SELECT COUNT(e) FROM Employee AS e "
             ),              //従業員情報の全件数を取得
     @NamedQuery(
+            name = "getEmployeesSearchById",
+            query = "SELECT e FROM Employee AS e WHERE e.id = :followId"
+            ),              //フォローをクリックした従業員の情報を取得
+    @NamedQuery(
             name = "getAllEmployee_ids",
             query = "SELECT e.id FROM Employee AS e ORDER BY e.id ASC"
             ),              //idのみ全て取得

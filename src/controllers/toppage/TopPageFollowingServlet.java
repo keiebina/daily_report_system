@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import models.Employee;
 import models.Report;
@@ -36,27 +36,45 @@ public class TopPageFollowingServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EntityManager em = DBUtil.createEntityManager();
 
-        //セッションスコープからuser_id情報の取得
-        HttpSession session = ((HttpServletRequest)request).getSession();
-        Employee e = (Employee)session.getAttribute("login_employee");
-        Integer user_id = e.getId();
+        //セッションスコープからuser情報の取得
+        Employee user = (Employee)request.getSession().getAttribute("login_employee");
 
-        //user_idがフォローしているidをデータベースから取得
-        List<Integer> follow_ids = em.createNamedQuery("getFollow_ids", Integer.class)
-                            .setParameter("user_id", user_id)
+        int page;
+        try{
+            page = Integer.parseInt(request.getParameter("page"));
+        }catch (Exception e) {
+            page = 1;
+        }
+
+        //userがフォローしている従業員情報をデータベースから取得
+        List<Employee> follows = em.createNamedQuery("getFollows", Employee.class)
+                            .setParameter("user", user)
                             .getResultList();
 
-//        //フォローしている社員数を取得
-//        long follow_ids_count = (long)em.createNamedQuery("countFollow_ids", Long.class)
-//                                    .setParameter("user_id", user_id)
-//                                    .getSingleResult();
+        if(follows.size() > 0){
+            //userにフォローされている従業員のreportテーブルを取得
+            List<Report> followingReports = em.createNamedQuery("getAllFollowingReports", Report.class)
+                    .setParameter("follows", follows)
+                    .setFirstResult(15 * (page - 1))
+                    .setMaxResults(15)
+                    .getResultList();
 
-        List<Report> following_report = em.createNamedQuery("getAllFollowingReports", Report.class)
-                                                .setParameter("follow_ids", follow_ids)
-                                                .getResultList();
-        System.out.println(follow_ids);
+            long followingCount = (long)em.createNamedQuery("getAllFollowingCount",Long.class)
+                                                .setParameter("follows", follows)
+                                                .getSingleResult();
 
-        response.getWriter().append("Served at: ").append(request.getContextPath());
+            request.setAttribute("followingReports", followingReports);
+            request.setAttribute("followingCount", followingCount);
+        }else{
+            request.setAttribute("followingReports", null);
+        }
+
+
+        em.close();
+
+
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/topPage/following.jsp");
+        rd.forward(request, response);
     }
 
 }

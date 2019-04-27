@@ -9,7 +9,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import models.Employee;
 import models.Follow;
@@ -34,30 +33,29 @@ public class FollowsUpdateServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-
             EntityManager em = DBUtil.createEntityManager();
 
             //セッションスコープからuser_id情報の取得 //リクエストパラメータからfollow_idの取得
-            HttpSession session = ((HttpServletRequest)request).getSession();
-            Employee e = (Employee)session.getAttribute("login_employee");
-            Integer user_id = e.getId();
-            Integer follow_id = Integer.parseInt(request.getParameter("follow_id"));
+            Employee user = (Employee)request.getSession().getAttribute("login_employee");
+            Integer followId = Integer.parseInt(request.getParameter("follow_id"));
+            Employee followEmployee = em.createNamedQuery("getEmployeesSearchById", Employee.class)
+                                .setParameter("followId", followId)
+                                .getSingleResult();
 
-            //user_idのフォローidをデータベースから取得
-            List<Integer> follow_ids = em.createNamedQuery("getFollow_ids", Integer.class)
-                                .setParameter("user_id", user_id)
-                                .getResultList();
+            //userのフォロー従業員をデータベースから取得
+            List<Employee> follows = em.createNamedQuery("getFollows", Employee.class)
+                                        .setParameter("user", user)
+                                        .getResultList();
 
             //フォローしているユーザーかどうか
-            if(FollowDecision.isFollowing(follow_id, follow_ids)){
+            if(FollowDecision.isFollowing(followId, follows)){
 
                 //フォローしているユーザーだった場合
                 em.getTransaction().begin();
 
-                em.createNamedQuery("deleteFollow_id")
-                    .setParameter("user_id", user_id)
-                    .setParameter("follow_id", follow_id)
+                em.createNamedQuery("deleteFollow")
+                    .setParameter("user", user)
+                    .setParameter("followEmployee", followEmployee)
                     .executeUpdate();
 
                 em.close();
@@ -69,8 +67,8 @@ public class FollowsUpdateServlet extends HttpServlet {
 
                 //followテーブルにuser_id,follow_idを保存
                 Follow f = new Follow();
-                f.setUser_id(user_id);
-                f.setFollow_id(follow_id);
+                f.setUser(user);
+                f.setFollowEmployee(followEmployee);
 
                 em.getTransaction().begin();
                 em.persist(f);
